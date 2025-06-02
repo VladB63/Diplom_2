@@ -52,7 +52,7 @@ class TestOrder:
         usm.create_users()
         usm.log_user()
         status_code, response = om.create_order_500(ingrit)
-        assert status_code == 500
+        assert status_code == 500 and ['Internal Server Error']
         usm.del_user()
 
 
@@ -68,7 +68,7 @@ class TestOrder:
         om.create_order(order_ingrit)
         om.create_order(order_ingrit)
         status_code, response = om.getting_order_list(token)
-        assert status_code == 200
+        assert status_code == 200 and ['orders']
         usm.del_user()
 
 

@@ -9,7 +9,7 @@ class TestUsers:
     def test_create_users(self):
         usm = UsersMethods()
         status_code, response = usm.create_users()
-        assert status_code == 200 and response
+        assert status_code == 200 and response['user']
         usm.del_user()
 
     @allure.title('Проверка создания дубля пользователя')
@@ -39,7 +39,7 @@ class TestUsers:
         usm = UsersMethods()
         usm.create_users()
         status_code, response = usm.log_user()
-        assert status_code == 200 and response
+        assert status_code == 200 and response['accessToken']
         usm.del_user()
 
 
@@ -62,7 +62,7 @@ class TestUsers:
         usm.create_users()
         usm.log_user()
         status_code, response = usm.change_user()
-        assert status_code == 200 and response
+        assert status_code == 200 and response['user']
         usm.del_user()
 
 
