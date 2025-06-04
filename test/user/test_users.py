@@ -2,23 +2,10 @@ import allure
 import pytest
 from data import CreateUsers
 from methods.users_methods import UsersMethods
+from test.conftest import create_new_user_and_delete
 
 class TestUsers:
 
-    @allure.title('Проверка успешного создания пользователя')
-    def test_create_users(self):
-        usm = UsersMethods()
-        status_code, response = usm.create_users()
-        assert status_code == 200 and response['user']
-        usm.del_user()
-
-    @allure.title('Проверка создания дубля пользователя')
-    def test_create_double_users(self):
-        usm = UsersMethods()
-        usm.create_users()
-        usm.create_users()
-        status_code, response = usm.create_users()
-        assert status_code == 403 and response == {"success": False, "message": "User already exists"}
 
     @allure.title('Проверка создания пользователя с не полными данными')
     @pytest.mark.parametrize(
@@ -35,12 +22,11 @@ class TestUsers:
 
 
     @allure.title('Проверка авторизации пользователя')
-    def test_auth_user_passed(self):
+    def test_auth_user_passed(self, create_new_user_and_delete):
+        payload, response_body = create_new_user_and_delete
         usm = UsersMethods()
-        usm.create_users()
         status_code, response = usm.log_user()
         assert status_code == 200 and response['accessToken']
-        usm.del_user()
 
 
     @allure.title('Проверка авторизации под не существующим пользователем')
@@ -57,13 +43,12 @@ class TestUsers:
 
 
     @allure.title('Проверка возможности изменения пользователя после авторизации')
-    def test_change_user(self):
+    def test_change_user(self, create_new_user_and_delete):
+        payload, response = create_new_user_and_delete
         usm = UsersMethods()
-        usm.create_users()
         usm.log_user()
         status_code, response = usm.change_user()
         assert status_code == 200 and response['user']
-        usm.del_user()
 
 
     @allure.title('Проверка возможности изменения пользователя без авторизации')
@@ -73,3 +58,19 @@ class TestUsers:
         assert status_code == 401 and response == {"success": False,
                                                    "message": "You should be authorised"}
 
+
+    @allure.title('Проверка успешного создания пользователя')
+    def test_create_users(self):
+        usm = UsersMethods()
+        status_code, response = usm.create_users()
+        assert status_code == 200 and response['user']
+        usm.del_user()
+
+
+    @allure.title('Проверка создания дубля пользователя')
+    def test_create_double_users(self):
+        usm = UsersMethods()
+        usm.create_users()
+        usm.create_users()
+        status_code, response = usm.create_users()
+        assert status_code == 403 and response == {"success": False, "message": "User already exists"}

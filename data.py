@@ -13,6 +13,6 @@ class UrlKey:
 
 class CreateUsers:
 
-    EMAIL = f"CosmoBun{random.randint(10, 1000)}@ya.ru"
+    EMAIL = f"CosmoMegaBun{random.randint(1000, 100000)}@ya.ru"
     PASSWORD = str(random.randint(10, 100))
     NAME = "Анатолий"
