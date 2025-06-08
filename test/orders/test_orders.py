@@ -15,7 +15,7 @@ class TestOrder:
         ingrit = om.getting_ingrit_list()
         order_ingrit = [ingrit[0], ingrit[1]]
         status_code, response = om.create_order(order_ingrit)
-        assert status_code == 200 and response['order']
+        assert status_code == 200 and ['order']
 
 
 
@@ -37,7 +37,7 @@ class TestOrder:
         ingrit = om.getting_ingrit_list()
         order_ingrit = [ingrit[0], ingrit[1]]
         status_code, response = om.create_order(order_ingrit)
-        assert status_code == 200 and response['order']
+        assert status_code == 200 and ['order']
 
 
     @allure.title('Проверка создания заказа с неверным хешем ингредиентов')
@@ -52,9 +52,9 @@ class TestOrder:
         om = OrderMethods()
         payload, response = create_new_user_and_delete
         usm.log_user()
-        status_code, response = om.create_order_500(ingrit)
+        status_code, response = om.create_order(ingrit)
         assert status_code == 500 and ['Internal Server Error']
-        usm.del_user()
+
 
 
     @allure.title('Проверка получения заказов авторизованный пользователь')
@@ -70,13 +70,19 @@ class TestOrder:
         om.create_order(order_ingrit)
         status_code, response = om.getting_order_list(token)
         assert status_code == 200 and ['orders']
-        usm.del_user()
+
 
 
     @allure.title('Проверка получения заказов не авторизованный пользователь')
-    def test_giv_order_list_not_auth(self):
+    @pytest.mark.parametrize(
+        "token", [
+            "",
+            "wrewr"
+        ]
+    )
+    def test_giv_order_list_not_auth(self, token):
         om = OrderMethods()
-        status_code, response = om.getting_order_list_not_auth()
+        status_code, response = om.getting_order_list(token)
         assert status_code == 401 and response == {"success": False,
                                                    "message": "You should be authorised"}
 

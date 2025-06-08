@@ -9,12 +9,6 @@ class OrderMethods:
     def create_order(self, ingredients):
         payload = {"ingredients": ingredients}
         response = requests.post(f'{UrlKey.BASE_URL}{UrlKey.ORDERS_URL}', json=payload)
-        return response.status_code, response.json()
-
-    @allure.step('Создание заказа с ошибкой 500')
-    def create_order_500(self, ingredients):
-        payload = {"ingredients": ingredients}
-        response = requests.post(f'{UrlKey.BASE_URL}{UrlKey.ORDERS_URL}', json=payload)
         return response.status_code, response
 
 
@@ -37,12 +31,6 @@ class OrderMethods:
     @allure.step('Получение списка заказов конкретного пользователя')
     def getting_order_list(self, token):
         headers = {"Authorization": token}
-        response = requests.get(f'{UrlKey.BASE_URL}{UrlKey.ORDERS_URL}', headers=headers)
-        return response.status_code, response.json()
-
-    @allure.step('Получение списка заказов не авторизованного пользователя')
-    def getting_order_list_not_auth(self):
-        headers = {"Authorization": ''}
         response = requests.get(f'{UrlKey.BASE_URL}{UrlKey.ORDERS_URL}', headers=headers)
         return response.status_code, response.json()
 
